@@ -5,7 +5,7 @@
 ## Thanks to "phusion/baseimage", "rocker/rstudio" and "mccahill/r-studio" for their
 ## excellent work, which was the basis for this docker image.
 ##
-## VERSION 0.1.0
+## VERSION 0.2.0
 
 ## To make your builds reproducible, make sure you lock down to a specific version, not to `latest`! 
 ## See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for a list of version numbers.
@@ -58,9 +58,27 @@ RUN apt-get update && \
         ca-certificates \
         file \
         git \
+        gettext-base \
         lsof \
         libxml2-dev \
         openjdk-8-jre \
+        build-essential \
+        libgsl0-dev \
+        libjpeg-dev \
+        libncurses5-dev \
+        libpng12-dev \
+        libsqlite3-dev \
+        libopenmpi-dev \
+        libnetcdf-dev \
+        markdown \
+        texlive-latex-base \
+        texlive-latex-recommended \
+        texlive-science \
+        texlive-font-utils \
+        texlive-lang-spanish \
+        latex-beamer \
+        xsltproc \
+        zlib1g-dev \
         libapparmor1 \
         libedit2 \
         libcurl4-openssl-dev \
@@ -68,6 +86,7 @@ RUN apt-get update && \
         psmisc \
         python-setuptools \
         sudo \
+        nginx \
         libopenblas-base \
         littler \
         r-cran-littler \
@@ -105,6 +124,9 @@ RUN echo '\n\
 ## Add script to install/update H2O library for R.
 ADD h2o-update-script.R /home/rstudio
 
+## Add nginx configuration for secure proxy services.
+ADD reverse-proxy.conf /etc/nginx/sites-available/rstudio-server
+
 ## s6-overlay automates integration of s6 (asynchronous rewrite of daemontools for embedded systems) into Docker images.
 ## Required by the subsequent userconf script.
 ## Ensure that RStudio path is in the environment file and clean up when done.
@@ -114,18 +136,24 @@ RUN wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/downloa
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     mkdir /etc/service/rstudio-server && \
     R CMD BATCH /home/rstudio/h2o-update-script.R && \
+    ln -sf /etc/nginx/sites-available/rstudio-server /etc/nginx/sites-enabled/default && \
     rm h2o-update-script.Rout
 
 ## Add user configuration script.
 ADD userconf.sh /etc/cont-init.d/conf 
 
-## Add s6 daemon script
+## Add s6 daemon scripts
 ADD rstudio-server.sh /etc/services.d/rstudio/run 
+ADD finish.sh /etc/services.d/rstudio/finish 
+ADD nginx-proxy.sh /etc/services.d/nginx/run 
+ADD finish.sh /etc/services.d/nginx/finish 
+
+## Add nginx configuration for the secure service proxy
+ADD reverse-proxy.conf /etc/nginx/conf.d/rstudio.conf
 
 ## For network access to the container, open ports through the container firewall
 ## Default ports: RStudio server at 8787 and H2O server at 54321 
-EXPOSE 8787/tcp 54321/tcp
-#EXPOSE 8384/tcp 22000/tcp 21027/udp
+EXPOSE 80/tcp 443/tcp
 
 ## Expose a default volume for Kitematic
 VOLUME /home/rstudio
