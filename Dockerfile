@@ -1,11 +1,11 @@
 ## roobyz/rstudio-server
 ##
-## RStudio Server on minimal Ubuntu 16.04. (docker run -d -p 8787:8787 roobyz/rstudio-server)
+## RStudio Server on minimal Ubuntu 16.04.
 ## Default username=rstudio and password=rstudio
 ## Thanks to "phusion/baseimage", "rocker/rstudio" and "mccahill/r-studio" for their
 ## excellent work, which was the basis for this docker image.
 ##
-## VERSION 0.5.1
+## VERSION 0.4.3
 
 ## To make your builds reproducible, make sure you lock down to a specific version, not to `latest`! 
 ## See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for a list of version numbers.
@@ -184,7 +184,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     ln -sf /etc/nginx/sites-available/waterstudio /etc/nginx/sites-enabled/default && \
     openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
         -keyout /etc/nginx/waterstudio.key -out /etc/nginx/waterstudio.crt \
-        -subj "/C=US/ST=California/L=Oakland/O=WateRStudio/OU=Open Source/CN=home.lab"
+        -subj "/OU=Open Source/CN=home.lab"
 
 ## Add nginx configuration for secure proxy services and user configuration script. 
 COPY ./setup/userconf.sh /etc/cont-init.d/conf 
