@@ -74,7 +74,7 @@ If you need to update or change to your docker container, you may access the doc
 
 ### Background
 
-The container starts with a minimal [Ubuntu OS] image from [Phusion] and the [S6] process supervisor added for a small Docker-friendly image. To enhance R specific code performance [OpenBlas] is included as the default Linear Algebra library, which provides some of the fastest noncommercial linear algebra optimizations.
+The container starts with a minimal [Ubuntu OS] image from [Phusion] with the [S6] process supervisor added for a small Docker-friendly image. To enhance R specific code performance, [OpenBlas] is included as the default Linear Algebra library, which provides some of the fastest noncommercial linear algebra optimizations.
 
 ### Additional Links
 
@@ -91,7 +91,7 @@ Visit the [roobyz/waterstudio] GitHub page to help improve this container.
 [docker overview]: https://docs.docker.com/toolbox/overview/ "Docker Installation Overview"
 [documentation]: https://support.rstudio.com/hc/en-us/categories/200035113-Documentation]
 [h2o]: http://www.h2o.ai "H2O: Open-source distributed Machine Learning"
-[h2o documentation]: http://www.h2o.ai/docs/ "H2O Documentation"
+[h2o documentation]: http://docs.h2o.ai "H2O Documentation"
 [h2o flow]: http://www.h2o.ai/product/flow/ "Flow open-source user-interface for H2O"
 [intel mkl]: https://software.intel.com/en-us/intel-mkl "Intel Math Kernel Library"
 [jupyter]: https://jupyter.org/ "Jupyter: Interactive Data Science Notebook"
@@ -103,4 +103,4 @@ Visit the [roobyz/waterstudio] GitHub page to help improve this container.
 [rstudio]: https://www.rstudio.com/home/ "RStudio for R"
 [s6]: http://www.skarnet.org/software/s6/index.html "skarnet's small and secure supervision software suite"
 [ubuntu os]: http://www.ubuntu.com/ "Linux-Based Operating System"
-[roobyz/waterstudio]: https://github.com/roobyz/ "GitHub Repository"
+[roobyz/waterstudio]: https://github.com/roobyz/waterstudio "GitHub Repository"
