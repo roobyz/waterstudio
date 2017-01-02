@@ -5,7 +5,7 @@
 ## Thanks to "phusion/baseimage", "rocker/rstudio" and "mccahill/r-studio" for their
 ## excellent work, which was the basis for this docker image.
 ##
-## VERSION 0.4.5
+## VERSION 0.4.6
 
 ## To make your builds reproducible, make sure you lock down to a specific version, not to `latest`! 
 ## See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for a list of version numbers.
@@ -145,8 +145,8 @@ RUN apt-get install -y -q --no-install-recommends \
         libhdf5-dev \
         libsm6 \
         libspatialindex-dev \
-        llvm-3.7 \
-        llvm-3.7-dev \
+        llvm-3.8 \
+        llvm-3.8-dev \
         python3 \
         python3-dev \
         python3-pip \
@@ -156,7 +156,7 @@ RUN apt-get install -y -q --no-install-recommends \
     apt-get clean && apt-get autoremove
     
 RUN pip3 install --upgrade pip virtualenv && pip3 install numpy && \
-    LLVM_CONFIG=/usr/bin/llvm-config-3.7 pip3 install llvmlite numba && export HDF5_DIR=/opt/local pip3 install tables && \
+    LLVM_CONFIG=/usr/bin/llvm-config-3.8 pip3 install llvmlite numba && export HDF5_DIR=/opt/local pip3 install tables && \
     pip3 install ipyparallel ipywidgets scipy matplotlib numexpr ipython jupyter pandas statsmodels scikit-learn scikit-image \
                  sympy pyzmq nose notebook cython patsy cloudpickle dill enum34 ggplot bokeh sqlalchemy h5py readline seaborn \
                  service_identity pydot-ng pymc nltk plotly feedparser gensim pymongo scrapy xgboost dateutils pyproj filterpy \
