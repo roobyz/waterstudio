@@ -1,53 +1,106 @@
-# Overview
+# WateRStudio
 
-This repository contains a Dockerfile for a Docker container running RStudio Server with H2O included. We start with the minimal Ubuntu image from Phusion and add the S6 process supervisor for a small Docker-friendly image. Also, to enhance performance we include OpenBlas as the default Linear Algebra library, which provides some of the fastest optimizations on x86 hardware, without the licensing restrictions and fees of the Intel MKL libraries.
+## Overview
 
-# Getting Started
+This repository contains a Dockerfile to build a [Docker] container for securely serving up [H2O] on [RStudio] or [Jupyter] using [Nginx] as an encrypted proxy server.
 
-To get started right away, ensure you have Docker installed and start a container with docker run --rm -ti rocker/r-base (see here for the docker run command options). In this case we are starting the r-base container (the base package to build from) in an interactive mode, see below for details of the other containers currently available. To get started on the rstudio container or its derivative containers (eg. hadleyverse and ropensci) you need to open a port, see the instructions in the wiki. The wiki also contains further instructions and information on the project, including how to extend these images and contribute to development.
+Container objective: facilitate learning and running data-science projects using:
 
+* A pre-configued, secure, standardized, and self-contained environment.
+* A big-data friendly setup through H2O using R, and/or Python.
+* A platform (Jupyter) for conducting collaborative reproducible research.
 
-# Build the new docker image.
-docker build -t roobyz/waterstudio .
+## Getting Started
 
+### Install Docker
 
-## Once all good.
-## Create a reusable container with default user and password: rstudio/rstudio
-docker create --name rstudio.server roobyz/waterstudio
+Windows, Mac, or Linux users can find complete installation instructions on the [docker getting started] page. Although you don't need to be a *command-line* wizard, you should be familiar with how to open your favorite shell or terminal, and run a few basic commands.
 
-## Create a reusable container with custom user and password
-docker create --name rstudio.server -e USER=<username> -e PASSWORD=<password> roobyz/waterstudio
+### Install a WateRStudio Software Image
 
-docker create --name rstudio.server -e USER=roobyz -e PASSWORD=rstudio roobyz/waterstudio
+Once you have Docker installed,
 
-mkdir ~/rstudio/code
-docker create --name rstudio.server \
-    -v ~/rstudio/code/:/home/rstudio/code:rw \
-    -e USER=roobyz -e PASSWORD=rstudio \
-    roobyz/waterstudio
+1. Create a shared folder for storing code that you will create in your docker container to your local computer (i.e. `mkdir -p ~/rstudio/code`).
+2. Open a command-line terminal.
+3. Read these notes and modify the following command as necessary:
 
-# Reuse the same container
-docker start rstudio.server
+    a) If you'd like, change your container name (*waterstudio*) to one you prefer. This is especially useful if you wan't to test different container versions without losing your existing one.
 
-docker inspect --format '{{ .NetworkSettings.IPAddress }}' rstudio.server
-docker exec -i -t rstudio.server /bin/bash
+    b) Map the shared folder into the container home folder that you created.
 
-docker stop  rstudio.server
-docker rm rstudio.server
+    c) Set your user name and password or remove the line for a default of: rstudio/rstudio.
 
+    d) The port entries map the container ports to your localhost ports.
 
-## Debugging: ssh into the image
-docker run --rm -it $(docker images -q roobyz/waterstudio) /sbin/my_init -- bash -l
-docker run --rm -it $(docker images -q roobyz/waterstudio) /init -- bash -l
-docker run --rm -it $(docker images -q roobyz/waterstudio) /bin/bash
-docker rmi $(docker images -q roobyz/waterstudio)
+4. Run the following docker command (with modifications as desired):
 
+``` docker
+docker create --name waterstudio \
+      -v ~/rstudio/code/:/home/rstudio/code:rw \
+      -e USER=[username] -e PASSWORD=[password] \
+      -p 80:80 -p 443:443 \
+      roobyz/waterstudio
+```
 
-https://h2o-release.s3.amazonaws.com/h2o/rel-lambert/5/docs-website/Ruser/top.html
-http://www.skarnet.org/software/s6/index.html
-https://hub.docker.com/r/rocker/rstudio/~/dockerfile/
-https://github.com/phusion/baseimage-docker
-http://pothibo.com/2015/7/how-to-debug-a-docker-container
-https://docs.docker.com/v1.8/reference/commandline/build/
-https://github.com/QuantumObject/docker-rstudio
-https://github.com/xianyi/OpenBLAS
+## Usage
+
+Once your container is created, you can start and stop the container as follows:
+
+> docker start *waterstudio*
+
+> docker stop *waterstudio*
+
+If you want to delete your container, first stop it and then run:
+
+> docker rm *waterstudio*
+
+## Accessing the Applications
+
+Once you have started your container, you may log in to RStudio through this link:
+
+> https://localhost/rstudio/
+
+Once you have initialized your H2O library you can connect to H2O Flow with this link:
+
+> https://localhost/flow/
+
+## Advanced
+
+If you need to update or change to your docker container, you may access the docker terminal as follows:
+
+> docker exec -i -t waterstudio /bin/bash
+
+## More Information
+
+### Background
+
+The container starts with a minimal [Ubuntu OS] image from [Phusion] and the [S6] process supervisor added for a small Docker-friendly image. To enhance R specific code performance [OpenBlas] is included as the default Linear Algebra library, which provides some of the fastest noncommercial linear algebra optimizations.
+
+### Additional Links
+
+RStudio Server [Documentation]
+
+Using [R On H2O]
+
+[H2O Documentation]
+
+Visit the [roobyz/waterstudio] GitHub page to help improve this container.
+
+[docker]: https://www.docker.com/what-docker "Docker: Open Platform for Application Containers"
+[docker getting started]: https://docs.docker.com/engine/getstarted/ "Docker: Getting Started"
+[docker overview]: https://docs.docker.com/toolbox/overview/ "Docker Installation Overview"
+[documentation]: https://support.rstudio.com/hc/en-us/categories/200035113-Documentation]
+[h2o]: http://www.h2o.ai "H2O: Open-source distributed Machine Learning"
+[h2o documentation]: http://www.h2o.ai/docs/ "H2O Documentation"
+[h2o flow]: http://www.h2o.ai/product/flow/ "Flow open-source user-interface for H2O"
+[intel mkl]: https://software.intel.com/en-us/intel-mkl "Intel Math Kernel Library"
+[jupyter]: https://jupyter.org/ "Jupyter: Interactive Data Science Notebook"
+[linux distribution]: https://docs.docker.com/engine/installation/linux/ "Docker: Linux Installation"
+[nginx]: https://www.nginx.com/ "NGINX | High Performance Reverse Proxy Server"
+[openblas]: https://github.com/xianyi/OpenBLAS "OpenBLAS: an optimized BLAS library"
+[phusion]: https://github.com/phusion/baseimage-docker
+[R On H2O]: https://h2o-release.s3.amazonaws.com/h2o/rel-lambert/5/docs-website/Ruser/top.html
+[rstudio]: https://www.rstudio.com/home/ "RStudio for R"
+[s6]: http://www.skarnet.org/software/s6/index.html "skarnet's small and secure supervision software suite"
+[ubuntu os]: http://www.ubuntu.com/ "Linux-Based Operating System"
+[roobyz/waterstudio]: https://github.com/roobyz/ "GitHub Repository"
