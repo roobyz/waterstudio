@@ -5,7 +5,7 @@
 ## Thanks to "phusion/baseimage", "rocker/rstudio" and "mccahill/r-studio" for their
 ## excellent work, which was the basis for this docker image.
 ##
-## VERSION 0.4.3
+## VERSION 0.4.4
 
 ## To make your builds reproducible, make sure you lock down to a specific version, not to `latest`! 
 ## See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for a list of version numbers.
