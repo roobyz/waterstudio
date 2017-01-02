@@ -12,3 +12,7 @@ for (pkg in pkgs) {
 
 # Now we download, install and initialize the H2O package for R.
 install.packages("h2o", type="source", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/rel-turing/3/R")))
+
+library(devtools)
+install_github("h2oai/h2o-3/h2o-r/ensemble/h2oEnsemble-package")
+#install.packages("https://h2o-release.s3.amazonaws.com/h2o-ensemble/R/h2oEnsemble_0.1.8.tar.gz", repos = NULL)

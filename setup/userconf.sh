@@ -6,6 +6,10 @@ PASSWORD=${PASSWORD:=rstudio}
 USERID=${USERID:=1000}
 ROOT=${ROOT:=FALSE}
 
+## Configure nginx authentication and jupyter service
+sh -c "echo -n "${USER}:" >> /etc/nginx/.htpasswd"
+sh -c "openssl passwd -apr1 ${PASSWORD} >> /etc/nginx/.htpasswd"
+
 if [ "$USERID" -ne 1000 ]
 ## Configure user with a different USERID if requested.
   then
