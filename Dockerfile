@@ -5,7 +5,7 @@
 ## Thanks to "phusion/baseimage", "rocker/rstudio" and "mccahill/r-studio" for their
 ## excellent work, which was the basis for this docker image.
 ##
-## VERSION 0.2.0
+## VERSION 0.3.1
 
 ## To make your builds reproducible, make sure you lock down to a specific version, not to `latest`! 
 ## See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for a list of version numbers.
@@ -122,10 +122,11 @@ RUN echo '\n\
 \n}' >> /etc/R/Rprofile.site
 
 ## Add script to install/update H2O library for R.
-ADD h2o-update-script.R /home/rstudio
+COPY ./code/h2o-update-script.R /home/rstudio
 
 ## Add nginx configuration for secure proxy services.
-ADD reverse-proxy.conf /etc/nginx/sites-available/rstudio-server
+COPY ./setup/reverse-proxy.conf /etc/nginx/sites-available/waterstudio
+COPY ./setup/ssl_options.conf /etc/nginx/ssl_options.conf
 
 ## s6-overlay automates integration of s6 (asynchronous rewrite of daemontools for embedded systems) into Docker images.
 ## Required by the subsequent userconf script.
@@ -134,22 +135,21 @@ RUN wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/downloa
     tar xzf /tmp/s6-overlay-amd64.tar.gz -C / && \
     echo "PATH=$PATH" >> /etc/R/Renviron.site && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    mkdir /etc/service/rstudio-server && \
     R CMD BATCH /home/rstudio/h2o-update-script.R && \
-    ln -sf /etc/nginx/sites-available/rstudio-server /etc/nginx/sites-enabled/default && \
+    ln -sf /etc/nginx/sites-available/waterstudio /etc/nginx/sites-enabled/default && \
+    openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/nginx/waterstudio.key -out /etc/nginx/waterstudio.crt \
+        -subj "/OU=Open Source/CN=home.lab" && \
     rm h2o-update-script.Rout
 
 ## Add user configuration script.
-ADD userconf.sh /etc/cont-init.d/conf 
+COPY ./setup/userconf.sh /etc/cont-init.d/conf 
 
 ## Add s6 daemon scripts
-ADD rstudio-server.sh /etc/services.d/rstudio/run 
-ADD finish.sh /etc/services.d/rstudio/finish 
-ADD nginx-proxy.sh /etc/services.d/nginx/run 
-ADD finish.sh /etc/services.d/nginx/finish 
-
-## Add nginx configuration for the secure service proxy
-ADD reverse-proxy.conf /etc/nginx/conf.d/rstudio.conf
+COPY ./setup/rstudio-server.sh /etc/services.d/rstudio/run 
+COPY ./setup/finish.sh /etc/services.d/rstudio/finish 
+COPY ./setup/nginx-proxy.sh /etc/services.d/nginx/run 
+COPY ./setup/finish.sh /etc/services.d/nginx/finish 
 
 ## For network access to the container, open ports through the container firewall
 ## Default ports: RStudio server at 8787 and H2O server at 54321 
