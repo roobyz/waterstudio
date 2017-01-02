@@ -22,17 +22,15 @@ Once you have Docker installed,
 
 1. Create a shared folder for storing code that you will create in your docker container to your local computer (i.e. `mkdir -p ~/rstudio/code`).
 2. Open a command-line terminal.
-3. Read these notes and modify the following command as necessary:
+3. Read these notes and run the following docker command (with modifications as desired):
 
-> If you'd like, change your container name (*waterstudio*) to one you prefer. This is especially useful if you wan't to test different container versions without losing your existing one.
+> * If you'd like, change your container name (*waterstudio*) to one you prefer. This is especially useful if you wan't to test different container versions without losing your existing one.
 
-> Map the shared folder into the container home folder that you created.
+> * Map the shared folder into the container home folder that you created.
 
-> Set your user name and password or remove the line for a default of: rstudio/rstudio.
+> * Set your user name and password or remove the line for a default of: rstudio/rstudio.
 
-> The port entries map the container ports to your localhost ports.
-
-4. Run the following docker command (with modifications as desired):
+> * The port entries map the container ports to your localhost ports.
 
 ``` docker
 docker create --name waterstudio \
